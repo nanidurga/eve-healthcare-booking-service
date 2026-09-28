@@ -22,6 +22,7 @@ dev = [
     "pytest>=8.3.0",
     "pytest-asyncio>=0.24.0",
     "httpx>=0.27.0",
+    "pytest-cov>=6.0.0",
 ]
 
 [build-system]
@@ -36,3 +37,17 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
 filterwarnings = ["error::DeprecationWarning:app.*"]
+
+[tool.coverage.run]
+source = ["app"]
+# SQLAlchemy's async layer runs ORM work inside greenlets and aiosqlite uses a
+# thread per connection; without these the tracer loses most service-layer lines.
+concurrency = ["greenlet", "thread"]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+]

@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     jwt_secret: str = DEV_JWT_SECRET
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
+    # bcrypt cost factor. 12 is a sane production default; the test suite
+    # drops it so hashing does not dominate the run time.
+    bcrypt_rounds: int = 12
 
     # Payment simulation. Deterministic on purpose: random failures make tests
     # flaky and make a reviewer's manual run unreproducible.

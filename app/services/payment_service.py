@@ -198,6 +198,7 @@ async def handle_webhook(
 
     claimed_id = await session.scalar(
         insert_or_ignore(
+            session,
             WebhookEvent,
             {
                 "event_id": event_id,

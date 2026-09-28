@@ -27,7 +27,9 @@ _DUMMY_HASH = bcrypt.hashpw(b"dummy-password-for-timing", bcrypt.gensalt()).deco
 
 
 def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    return bcrypt.hashpw(
+        password.encode("utf-8"), bcrypt.gensalt(rounds=settings.bcrypt_rounds)
+    ).decode("utf-8")
 
 
 def verify_password(password: str, password_hash: str) -> bool:

@@ -67,14 +67,19 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
         await session.close()
 
 
-def insert_or_ignore(model, values: dict, *, conflict_columns: list[str]):  # noqa: ANN001, ANN201
+def insert_or_ignore(
+    session: AsyncSession, model, values: dict, *, conflict_columns: list[str]
+):  # noqa: ANN001, ANN201
     """``INSERT ... ON CONFLICT DO NOTHING RETURNING id``, for either dialect.
 
     This is the primitive that makes webhook handling idempotent: the insert
     either wins the race and returns an id, or loses it and returns nothing.
     A read-then-write check could not do this without a race.
+
+    The dialect is taken from the session's own bind so tests can supply their
+    own engine.
     """
-    if engine.dialect.name == "postgresql":
+    if session.get_bind().dialect.name == "postgresql":
         from sqlalchemy.dialects.postgresql import insert as dialect_insert
     else:
         from sqlalchemy.dialects.sqlite import insert as dialect_insert
