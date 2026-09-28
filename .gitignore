@@ -13,3 +13,6 @@ htmlcov/
 *.egg-info/
 dist/
 build/
+
+# The assignment brief is kept locally but not published.
+*.pdf
