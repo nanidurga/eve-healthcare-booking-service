@@ -73,7 +73,10 @@ class Booking(Base, TimestampMixin):
     cancellation_reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     user: Mapped[User] = relationship(back_populates="bookings")
-    centre_test: Mapped[CentreTest] = relationship(back_populates="bookings", lazy="joined")
+    # Deliberately NOT lazy="joined": the webhook locks booking rows with
+    # SELECT ... FOR UPDATE, which PostgreSQL refuses on the nullable side of
+    # an outer join. Readers eager-load this explicitly instead.
+    centre_test: Mapped[CentreTest] = relationship(back_populates="bookings")
     payments: Mapped[list[Payment]] = relationship(
         back_populates="booking", cascade="all, delete-orphan", order_by="Payment.id"
     )
