@@ -1,0 +1,13 @@
+# Normalise to LF in the repository. Without this, files committed from Windows
+# can arrive in the Docker image with CRLF, and the shell entrypoint then fails
+# with "exec format error".
+* text=auto eol=lf
+
+*.sh      text eol=lf
+Dockerfile text eol=lf
+*.py      text eol=lf
+*.yml     text eol=lf
+*.toml    text eol=lf
+*.md      text eol=lf
+
+*.pdf     binary
