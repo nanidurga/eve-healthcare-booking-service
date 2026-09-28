@@ -32,6 +32,11 @@ class Settings(BaseSettings):
     # flaky and make a reviewer's manual run unreproducible.
     payment_failure_cents: int = 13
 
+    # Optional shared secret for POST /payments/webhook. Left empty by default
+    # so the endpoint is callable straight from the docs page; set it and the
+    # endpoint starts requiring a matching X-Webhook-Secret header.
+    webhook_secret: str = ""
+
     @property
     def is_sqlite(self) -> bool:
         return self.database_url.startswith("sqlite")
