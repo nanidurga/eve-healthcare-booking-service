@@ -3,7 +3,11 @@
 from functools import lru_cache
 from typing import Literal
 
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Long enough for HS256; obviously not a secret. Production must override it.
+DEV_JWT_SECRET = "insecure-development-secret-do-not-use-in-production"
 
 
 class Settings(BaseSettings):
@@ -20,7 +24,7 @@ class Settings(BaseSettings):
     database_url: str = "sqlite+aiosqlite:///./eve.db"
 
     # Auth
-    jwt_secret: str = "dev-secret-change-me"
+    jwt_secret: str = DEV_JWT_SECRET
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
 
@@ -31,6 +35,14 @@ class Settings(BaseSettings):
     @property
     def is_sqlite(self) -> bool:
         return self.database_url.startswith("sqlite")
+
+    @model_validator(mode="after")
+    def _reject_dev_secret_in_production(self) -> "Settings":
+        if self.env == "production" and self.jwt_secret == DEV_JWT_SECRET:
+            raise ValueError(
+                "JWT_SECRET must be set to a real secret when ENV=production."
+            )
+        return self
 
 
 @lru_cache
