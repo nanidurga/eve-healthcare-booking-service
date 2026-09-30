@@ -119,3 +119,13 @@ async def test_healthz(client: AsyncClient) -> None:
     response = await client.get("/healthz")
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
+
+
+async def test_root_redirects_to_demo_ui(client: AsyncClient) -> None:
+    response = await client.get("/")
+    assert response.status_code == 307
+    assert response.headers["location"] == "/ui/"
+
+    page = await client.get("/ui/")
+    assert page.status_code == 200
+    assert "app.js" in page.text

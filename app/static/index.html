@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EVE Diagnostics</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230f5c55'/><path d='M9 16h4l2-5 3 10 2-5h3' stroke='white' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32"><path d="M7 16h5l2.5-6 3.5 12 2.5-6H25"/></svg>
+      </span>
+      <span class="brand-name">EVE <em>Diagnostics</em></span>
+    </div>
+    <nav class="tabs" id="tabs" hidden>
+      <button data-view="centres" class="active">Book a test</button>
+      <button data-view="bookings">My bookings</button>
+      <button data-view="webhook">Webhook lab</button>
+    </nav>
+    <div class="session" id="session"></div>
+  </header>
+
+  <div class="layout">
+    <main id="main"></main>
+
+    <aside class="console" aria-label="API traffic">
+      <div class="console-head">
+        <div>
+          <h2>Live API traffic</h2>
+          <p>Every call this page makes, as it happens.</p>
+        </div>
+        <button class="ghost small" id="clear-log">Clear</button>
+      </div>
+      <ol class="log" id="log"></ol>
+    </aside>
+  </div>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

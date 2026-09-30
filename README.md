@@ -12,7 +12,7 @@ covered end to end by
 [`tests/test_webhook_idempotency.py`](tests/test_webhook_idempotency.py).
 
 ```
-132 tests, 96% coverage (100% on every service module)
+133 tests, 96% coverage (100% on every service module)
 ```
 
 ---
@@ -45,6 +45,7 @@ This starts PostgreSQL 16 and the API. The API container waits for the database
 healthcheck, runs `alembic upgrade head`, seeds a demo catalogue, and serves on
 **http://localhost:8000**.
 
+- **Demo UI: <http://localhost:8000/>** — see below
 - Swagger UI: <http://localhost:8000/docs>
 - ReDoc: <http://localhost:8000/redoc>
 - Health: <http://localhost:8000/healthz>
@@ -79,10 +80,26 @@ DATABASE_URL=postgresql+asyncpg://eve:eve@localhost:5432/eve_diagnostics
 
 The seed creates **`asha@example.com` / `password123`**.
 
+### Demo UI
+
+Open **<http://localhost:8000/>** once the server is running. It is a small
+dependency-free page (plain HTML/CSS/JS in [`app/static/`](app/static/), served
+by FastAPI at `/ui/`, no build step) that walks through the whole flow:
+
+- **Book a test** — browse centres by city, see per-centre prices, book a slot.
+- **My bookings** — pay (instantly, forced decline, or async via webhook) and
+  cancel, with the booking state machine drawn and the current state lit up.
+- **Webhook lab** — act as the payment provider: deliver the same event three
+  times, send a late out-of-order event, or settle a cancelled booking, and see
+  the `outcome` of each delivery.
+
+A panel on the right shows every request and response live. It signs in as the
+seeded demo patient by default.
+
 ### Run the tests
 
 ```bash
-pytest                              # 132 tests
+pytest                              # 133 tests
 pytest --cov --cov-report=term      # with coverage
 ```
 

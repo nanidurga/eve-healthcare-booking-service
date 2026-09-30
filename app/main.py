@@ -5,10 +5,12 @@ from __future__ import annotations
 import logging
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.api.v1.router import api_router
 from app.core.config import settings
@@ -16,6 +18,8 @@ from app.core.database import engine
 from app.core.errors import AppError
 
 logger = logging.getLogger("eve")
+
+STATIC_DIR = Path(__file__).parent / "static"
 
 DESCRIPTION = """
 Backend service for diagnostic test bookings and simulated payments.
@@ -50,6 +54,13 @@ def create_app() -> FastAPI:
     @app.get("/healthz", tags=["meta"], summary="Liveness probe")
     async def healthz() -> dict[str, str]:
         return {"status": "ok", "env": settings.env}
+
+    # A dependency-free demo UI: plain HTML/JS calling the API above.
+    @app.get("/", include_in_schema=False)
+    async def root() -> RedirectResponse:
+        return RedirectResponse("/ui/")
+
+    app.mount("/ui", StaticFiles(directory=STATIC_DIR, html=True), name="ui")
 
     return app
 
